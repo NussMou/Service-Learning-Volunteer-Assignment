@@ -1,4 +1,4 @@
-# StudentSelectionAssistant
+# Service-Learning-Volunteer-Assignment
 - Motivation : 由於看到助教在選擇學生時有過多不必要的資訊和重複的操作，所以撰寫此腳本
 
 ---
