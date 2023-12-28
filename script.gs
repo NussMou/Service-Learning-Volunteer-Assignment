@@ -52,13 +52,13 @@ function createSheetsBasedOnFirstChoice() {
     if (firstChoice && !existingSheets[firstChoice]) {
       // 創建新的試算表
       var newSheet = spreadsheet.insertSheet(firstChoice);
-      newSheet.appendRow(["姓名", "Email", "學號", "理由/連結/推薦"]);
+      newSheet.appendRow(["姓名", "Email", "學號", "志願二", "志願三", "理由/連結/推薦"]);
       existingSheets[firstChoice] = true;
       appendToColumn(inputSheet, 1, firstChoice);
     }
     // 第一志願已經有對應的工作表
     var targetSheet = spreadsheet.getSheetByName(firstChoice);
-    var studentInfo = [row[name_col], row[mail_col], row[id_col], row[firstChoiceColumn + 1]];
+    var studentInfo = [row[name_col], row[mail_col], row[id_col],row[secondChoiceColumn], row[thirdChoiceColumn], row[firstChoiceColumn + 1]];
     targetSheet.appendRow(studentInfo);
   }
 }
@@ -89,7 +89,10 @@ function onEdit(e) {
   if (sheet.getName() !== 'Input') {
     //  if(sheet.getName() !== 'Buffer')
     //   bufferSheet.appendRow(["!Input","test"]);
-
+    if (sheet.getName() == "Sheet1" || sheet.getName() == "Buffer") return; 
+    else {
+      
+    }
     return;
   }
   // else if(!editedValue) return ;
