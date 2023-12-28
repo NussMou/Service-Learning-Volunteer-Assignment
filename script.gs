@@ -19,7 +19,7 @@ function createSheetsBasedOnFirstChoice() {
     else if (column == "姓名") name_col = i;
   }
 
-  // 獲取所有現有的工作表名稱，並將它們存在一個對象中
+  // 獲取所有現有的工作表名稱，並將它們存在一個 object 中
   var existingSheets = spreadsheet.getSheets().reduce(function(acc, sheet) {
     acc[sheet.getName()] = true;
     return acc;
@@ -27,11 +27,19 @@ function createSheetsBasedOnFirstChoice() {
 
   if(!existingSheets["Buffer"]){
     bufferSheet = spreadsheet.insertSheet("Buffer");
-  }else {
+    bufferSheet.appendRow(["margin"]);
+    let l = [];
+    for (var i = 0; i < mainData[0].length; i++) {
+      l.push(mainData[0][i]);
+    }
+    bufferSheet.appendRow(l);
+  }
+  else {
     bufferSheet = spreadsheet.getSheetByName("Buffer");
   }
   if(!existingSheets["Input"]){
     inputSheet = spreadsheet.insertSheet("Input");
+    inputSheet.appendRow(["margin"]);
   }
   else {
     inputSheet = spreadsheet.getSheetByName("Input");
@@ -65,18 +73,37 @@ function onEdit(e) {
   var range = e.range;
   var sheet = range.getSheet();
   var editedValue = e.value;
+  var name_col;
+  var bufferSheet = e.source.getSheetByName('Buffer'); // 獲取 "Buffer" 工作表
+  var mainSheet = e.source.getSheetByName("Sheet1");
+  var mainData = mainSheet.getDataRange().getValues();
+  // bufferSheet.appendRow(["test",mainData[0].length]);
 
-  // 確保編輯是在 "Input" 工作表上進行的
-  if (sheet.getName() !== 'Input' || !editedValue) {
-    return;
+
+  for (var i = 0; i < mainData[0].length; i++) {
+    var column = mainData[0][i];
+    if (column == "姓名") name_col = i;
   }
 
+  // 確保編輯是在 "Input" 工作表上進行的
+  if (sheet.getName() !== 'Input') {
+    //  if(sheet.getName() !== 'Buffer')
+    //   bufferSheet.appendRow(["!Input","test"]);
+
+    return;
+  }
+  // else if(!editedValue) return ;
+  var tmp_values = range.getValues(); // 這會是一個二維數組
+  editedValue = tmp_values[0][0]; // 獲取單個編輯值
+
   // 檢查主工作表中的每一行
-  for (var i = 1; i < mainData.length; i++) {
+  // bufferSheet.appendRow(["Input","test",editedValue]);
+  // 檢查主工作表中的每一行
+  for (var i = 0; i < mainData.length; i++) {
     if (mainData[i][name_col] == editedValue) {
       // 找到匹配的學生，將其信息複製到 Buffer 工作表
       bufferSheet.appendRow(mainData[i]);
-      break;
+      return; // 匹配後結束
     }
   }
 }
